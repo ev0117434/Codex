@@ -23,7 +23,7 @@
 
 ## Rules
 1. `best_bid_spot > 0`.
-2. Обе котировки должны быть свежими: `age < STALENESS_THRESHOLD`.
+2. Обе котировки должны быть свежими: `age_ns < STALENESS_THRESHOLD_NS`.
 3. Для stale/отсутствия данных выводим `N/A`.
 4. Отрицательный spread допустим и не обрезается.
 
