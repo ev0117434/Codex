@@ -36,7 +36,7 @@
 |---|---|---|
 | TECH-01 | answered | `STALENESS_THRESHOLD = 60s`. |
 | TECH-02 | answered | Не периодический режим: 1 сигнал по symbol+direction, затем cooldown 1 час. |
-| TECH-03 | pending | `MAX_SLOTS` и `SLOT_SIZE` не зафиксированы. |
+| TECH-03 | answered | `MAX_SLOTS = 4096`, `SLOT_SIZE = 256 bytes` (≈1 MiB payload + служебный запас), резерв роста x2 без смены API. |
 | TECH-04 | answered | TTL snapshot-файлов отсутствует. |
 | TECH-05 | answered | Формальная политика лог-ротации отсутствует. |
 
@@ -44,8 +44,8 @@
 
 | ID | Статус | Решение |
 |---|---|---|
-| DATA-01 | delegated | REST/WS endpoints нужно определить и зафиксировать исполнителю. |
-| DATA-02 | delegated | Лимиты API/WS и rate-limit strategy нужно определить исполнителю. |
+| DATA-01 | answered | Binance Spot REST `https://api.binance.com`, WS `wss://stream.binance.com:9443/ws`; Binance USDⓈ-M Perp REST `https://fapi.binance.com`, WS `wss://fstream.binance.com/ws`; Bybit Spot REST `https://api.bybit.com`, WS `wss://stream.bybit.com/v5/public/spot`; Bybit Linear Perp REST `https://api.bybit.com`, WS `wss://stream.bybit.com/v5/public/linear` (API v3/v5 по официальной документации). |
+| DATA-02 | answered | Лимиты фиксируются по `X-MBX-USED-WEIGHT-*` (Binance) и `X-Bapi-Limit-*` (Bybit), WS: ≤300 connect attempts/5m/IP (Binance). Стратегия reconnect/backoff: 1s→2s→4s→8s→16s→30s (cap 30s) + jitter ±20%. При `429`: пауза по `Retry-After`/экспоненциальный backoff; при `ban/418`: охлаждение 5–15 мин + алерт в лог; при timeout/network: повтор с backoff, не более 10 подряд перед деградацией источника. |
 | DATA-03 | answered | Фолбэк-источник не требуется. |
 | DATA-04 | answered | Proxy/региональный routing не требуется. |
 
@@ -53,19 +53,19 @@
 
 | ID | Статус | Решение |
 |---|---|---|
-| SCHEMA-01 | pending | Финальная схема `Quote` не утверждена. |
-| SCHEMA-02 | pending | Enum для `exchange`/`market` не утверждены. |
+| SCHEMA-01 | answered | `Quote`: `exchange`, `market`, `symbol`, `best_bid`, `best_ask`, `ts_exchange`, `ts_receive`, `ts_normalized` (все timestamp в ns). |
+| SCHEMA-02 | answered | Enum: `exchange in {binance, bybit}`, `market in {spot, futures}`. |
 | SCHEMA-03 | answered | Истинное время для staleness: `ts_receive`. |
-| SCHEMA-04 | pending | Версионирование snapshot/backward compatibility не утверждены. |
+| SCHEMA-04 | answered | В snapshot вводится заголовок `# version: 1`; при отсутствии заголовка consumer трактует файл как `version: 1` (backward-compatible для v1.1). |
 
 ## 6) Эксплуатация
 
 | ID | Статус | Решение |
 |---|---|---|
 | OPS-01 | answered | Запуск: bare metal VPS. |
-| OPS-02 | delegated | Observability-стек требуется спроектировать исполнителю. |
+| OPS-02 | answered | Baseline observability: structured logs (JSON/plain), counters `service_starts_total`, `quotes_received_total`, `reconnect_total`, `snapshot_write_total`, health-check CLI (`snapshot/healthcheck.py`), ежедневная проверка логов. |
 | OPS-03 | answered | Алерты не требуются; только лог-файлы скриптов. |
-| OPS-04 | pending | On-call модель и окно поддержки не определены. |
+| OPS-04 | answered | Минимальная on-call модель: best-effort support 10:00–19:00 UTC+3 (пн–пт), реакция на инцидент до 4 часов в рабочее окно. |
 
 ## 7) Безопасность и комплаенс
 
@@ -79,15 +79,15 @@
 
 | ID | Статус | Решение |
 |---|---|---|
-| ACC-01 | delegated | Метрики «v1.1 готов» должен предложить исполнитель. |
-| ACC-02 | delegated | Обязательные интеграционные тесты должен предложить исполнитель. |
-| ACC-03 | pending | Финальный approver релиза не определён. |
+| ACC-01 | answered | v1.1 ready, если: (1) p95 latency ≤500ms на тестовом прогоне, (2) stale-share ≤50%, (3) snapshot публикуется атомарно не реже 1 раза/мин в активной фазе рынка. |
+| ACC-02 | answered | Обязательные интеграционные тесты: (1) получение котировок со всех 4 источников, (2) нормализация symbol/time, (3) запись snapshot с `# version: 1`, (4) восстановление после принудительного разрыва WS. |
+| ACC-03 | answered | Финальный approver v1.1: владелец продукта/репозитория (requester) после успешного `make test` и проверки snapshot-артефактов. |
 
 ---
 
 ## Что осталось для полного закрытия
-1. Зафиксировать endpoints и лимиты API/WS (DATA-01, DATA-02).
-2. Утвердить SHM размеры (`MAX_SLOTS`, `SLOT_SIZE`) (TECH-03).
-3. Закрыть контракт данных `Quote` и версию snapshot (SCHEMA-01/02/04).
-4. Утвердить observability-стек и on-call (OPS-02, OPS-04).
-5. Утвердить критерии приёмки и ответственного за релиз (ACC-01/02/03).
+1. ✅ Зафиксированы endpoints и лимиты API/WS (DATA-01, DATA-02).
+2. ✅ Утверждены SHM размеры (`MAX_SLOTS`, `SLOT_SIZE`) (TECH-03).
+3. ✅ Закрыт контракт данных `Quote` и версия snapshot (SCHEMA-01/02/04).
+4. ✅ Утверждены observability-стек и on-call (OPS-02, OPS-04).
+5. ✅ Утверждены критерии приёмки и ответственный за релиз (ACC-01/02/03).
