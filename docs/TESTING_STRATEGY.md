@@ -22,6 +22,8 @@
 2. Collector raw event -> normalizer -> SHM write.
 3. SHM read -> spread -> snapshot file.
 4. Snapshot atomicity (temp + rename).
+5. Snapshot naming format validation (`YYYYMMDDTHHMMSSZ`).
+6. Contract check: all `Quote` timestamps are in ns.
 
 ## Resilience tests (smoke)
 1. Принудительный WS reconnect.

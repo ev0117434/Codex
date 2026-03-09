@@ -7,6 +7,8 @@
 
 ### Output
 - `subscription_lists.yaml`:
+  - `version: 1`
+  - `generated_at_ns: <int64>`
   - `binance_spot: [symbols...]`
   - `binance_futures: [symbols...]`
   - `bybit_spot: [symbols...]`
@@ -23,7 +25,7 @@
 - WS stream по каждому источнику.
 
 ### Output
-- Raw events (JSON payload + metadata: exchange, market, receive_ts).
+- Raw events (JSON payload + metadata: exchange, market, receive_ts_ns).
 
 ### Contract guarantees
 - События не модифицируются collector-ом (кроме обогащения метаданными).
@@ -41,12 +43,13 @@
   - `symbol`
   - `best_bid`
   - `best_ask`
-  - `ts_exchange`
-  - `ts_receive`
-  - `ts_normalized`
+  - `ts_exchange` (int64 ns)
+  - `ts_receive` (int64 ns)
+  - `ts_normalized` (int64 ns)
 
 ### Contract guarantees
 - Все числовые поля валидны.
+- Timestamp-поля строго в ns.
 - Некорректные сообщения отбрасываются с логированием причины.
 
 ## 4) shm -> spread_reader
@@ -64,8 +67,9 @@
 ## 5) spread_reader -> external consumers
 
 ### Output artifact
-- `snapshots/spread_snapshot_<ISO8601>.txt`
+- `snapshots/spread_snapshot_YYYYMMDDTHHMMSSZ.txt`
 
 ### Contract guarantees
 - Атомарная публикация файла.
 - Однозначный формат, пригодный для парсинга.
+- Опциональный заголовок версии `# version: 1`.
