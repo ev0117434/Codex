@@ -22,6 +22,9 @@
 - [7) Roadmap v1.2+](./ROADMAP_V1_2_PLUS.md) — что расширяем после стабильного релиза.
 - [8) Glossary & Style](./GLOSSARY_AND_STYLE.md) — словарь терминов и соглашения по стилю.
 - [9) Assumptions & Limits](./ASSUMPTIONS_AND_LIMITS.md) — допущения и ограничения v1.1.
+- [10) TODO Plan](./TODO_PLAN.md) — практический чек-лист задач v1.1.
+- [11) Missing Information](./MISSING_INFORMATION.md) — актуальный реестр закрытых и открытых решений по требованиям.
+- [12) Missing Information Questionnaire](./MISSING_INFORMATION_QUESTIONNAIRE.md) — заполненный вопросник с ответами заказчика и оставшимися пробелами.
 
 ## ADR (Architecture Decision Records)
 - [ADR-0001: Python as implementation language](./adr/ADR-0001-python-runtime.md)
