@@ -113,3 +113,15 @@ git commit -m "chore: bootstrap project skeleton for v1.1"
 - [x] T0 артефакты и структура добавлены в репозиторий.
 - [x] Локальная проверка (`make test`) проходит.
 - [x] Готовы начинать T1 (discovery инструментов).
+
+---
+
+## Фактическая сверка (повторная валидация)
+
+Повторная проверка показала, что стартовые условия действительно выполнены:
+- критические пункты `DATA-01/02`, `TECH-03`, `SCHEMA-01/02/04`, `OPS-02/04`, `ACC-01/02/03` имеют статус `answered` в `docs/MISSING_INFORMATION.md`;
+- T0-артефакты (`requirements.txt`, `Makefile`, `config/config.yaml`) присутствуют;
+- каталоги `symbol_discovery`, `collectors`, `normalizer`, `shm`, `spread_reader`, `snapshot` присутствуют;
+- `make test` проходит без ошибок на каркасе.
+
+Вывод: **Definition of Ready подтверждён, переход к T1/T2 разрешён**.
