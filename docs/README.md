@@ -25,7 +25,7 @@
 - [10) TODO Plan](./TODO_PLAN.md) — практический чек-лист задач v1.1.
 - [11) Missing Information](./MISSING_INFORMATION.md) — актуальный реестр закрытых и открытых решений по требованиям.
 - [12) Missing Information Questionnaire](./MISSING_INFORMATION_QUESTIONNAIRE.md) — заполненный вопросник с ответами заказчика и оставшимися пробелами.
-- [11) Missing Information](./MISSING_INFORMATION.md) — список открытых вопросов и недостающих входных данных.
+- [13) Day 1 Checklist](./DAY1_CHECKLIST.md) — практический чек-лист на первый рабочий день с командами проверки.
  
 
 ## ADR (Architecture Decision Records)
