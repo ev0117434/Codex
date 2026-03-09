@@ -2,9 +2,9 @@
 
 ## Startup order
 1. `symbol_discovery`
-2. `collectors`
-3. `normalizer`
-4. `shm_init` (если не инициализирован)
+2. `shm_init` (если не инициализирован)
+3. `collectors`
+4. `normalizer`
 5. `spread_reader`
 
 ## Runtime checks
@@ -12,6 +12,7 @@
 - Есть ли входящий WS-трафик по 4 источникам.
 - Растут ли counters `normalized_quotes_total`.
 - Генерируются ли snapshots с ожидаемым интервалом.
+- Валидны ли имена snapshot-файлов (`spread_snapshot_YYYYMMDDTHHMMSSZ.txt`).
 
 ## Failure scenarios
 
@@ -30,10 +31,20 @@
 ## Recovery procedure
 1. Graceful stop всех процессов.
 2. Очистка/переинициализация SHM при необходимости.
-3. Холодный запуск в startup-order.
+3. Холодный запуск в startup order.
 4. Проверка первых N snapshots и метрик свежести.
 
+## SLO / Alert table (v1.1 baseline)
+
+| Компонент | SLO | Метрика | Alert-порог |
+|---|---|---|---|
+| `collectors` | reconnect recovery p95 ≤ 30s | `collector_reconnect_duration_seconds` | p95 > 30s в течение 10 мин |
+| `normalizer` | parse error rate < 1% | `normalize_errors_total / raw_events_total` | > 1% в течение 5 мин |
+| `shm` | write/read lag p95 ≤ 5ms | `shm_write_read_lag_ms` | p95 > 5ms в течение 10 мин |
+| `spread_reader` | snapshot latency p95 ≤ interval + 20% | `snapshot_latency_ms` | p95 > target в течение 10 мин |
+| end-to-end | freshness ≥ 95% non-stale | `fresh_records_ratio` | < 95% в течение 15 мин |
+
 ## Minimal SLO draft
-- Freshness: >= 95% записей не stale в нормальном сетевом режиме.
+- Freshness: >= 95% записей non-stale в нормальном сетевом режиме.
 - Snapshot latency: p95 не хуже целевого интервала + 20%.
 - Service availability: best effort для single-host v1.1.

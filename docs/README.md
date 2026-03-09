@@ -20,6 +20,8 @@
 - [5) Operations Runbook](./OPERATIONS_RUNBOOK.md) — эксплуатация, восстановление, диагностика.
 - [6) Testing Strategy](./TESTING_STRATEGY.md) — стратегия проверок для v1.1.
 - [7) Roadmap v1.2+](./ROADMAP_V1_2_PLUS.md) — что расширяем после стабильного релиза.
+- [8) Glossary & Style](./GLOSSARY_AND_STYLE.md) — словарь терминов и соглашения по стилю.
+- [9) Assumptions & Limits](./ASSUMPTIONS_AND_LIMITS.md) — допущения и ограничения v1.1.
 
 ## ADR (Architecture Decision Records)
 - [ADR-0001: Python as implementation language](./adr/ADR-0001-python-runtime.md)
