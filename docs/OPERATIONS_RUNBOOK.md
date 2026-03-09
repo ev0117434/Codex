@@ -42,9 +42,9 @@
 | `normalizer` | parse error rate < 1% | `normalize_errors_total / raw_events_total` | > 1% в течение 5 мин |
 | `shm` | write/read lag p95 ≤ 5ms | `shm_write_read_lag_ms` | p95 > 5ms в течение 10 мин |
 | `spread_reader` | snapshot latency p95 ≤ interval + 20% | `snapshot_latency_ms` | p95 > target в течение 10 мин |
-| end-to-end | freshness ≥ 95% non-stale | `fresh_records_ratio` | < 95% в течение 15 мин |
+| end-to-end | stale-share ≤ 50% (эквивалентно fresh ≥ 50%) | `stale_records_ratio` | > 50% в течение 15 мин |
 
 ## Minimal SLO draft
-- Freshness: >= 95% записей non-stale в нормальном сетевом режиме.
+- Freshness: stale-share <= 50% (в соответствии с SLO-02 и реестром решений).
 - Snapshot latency: p95 не хуже целевого интервала + 20%.
-- Service availability: best effort для single-host v1.1.
+- Service availability: целевое значение 100% (SLO-03), фактическая операционная модель — best effort для single-host v1.1.
