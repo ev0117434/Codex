@@ -1,6 +1,6 @@
 # Реестр решений и недостающей информации (v1.1)
 
-Документ обновлён по вашим ответам: часть пунктов закрыта (`answered`), часть осталась в работе (`pending`).
+Документ синхронизирован с текущими решениями v1.1: критические пункты Day-1 закрыты и зафиксированы как `answered`.
 
 ## Статусы
 - `answered` — решение зафиксировано.
@@ -44,7 +44,7 @@
 
 | ID | Статус | Решение |
 |---|---|---|
-| DATA-01 | answered | Binance Spot REST `https://api.binance.com`, WS `wss://stream.binance.com:9443/ws`; Binance USDⓈ-M Perp REST `https://fapi.binance.com`, WS `wss://fstream.binance.com/ws`; Bybit Spot REST `https://api.bybit.com`, WS `wss://stream.bybit.com/v5/public/spot`; Bybit Linear Perp REST `https://api.bybit.com`, WS `wss://stream.bybit.com/v5/public/linear` (API v3/v5 по официальной документации). |
+| DATA-01 | answered | Binance Spot REST `https://api.binance.com`, WS `wss://stream.binance.com:9443/ws`; Binance USDⓈ-M Perp REST `https://fapi.binance.com`, WS `wss://fstream.binance.com/ws`; Bybit Spot/Linear REST `https://api.bybit.com` (v5), WS `wss://stream.bybit.com/v5/public/spot` и `wss://stream.bybit.com/v5/public/linear`. |
 | DATA-02 | answered | Лимиты фиксируются по `X-MBX-USED-WEIGHT-*` (Binance) и `X-Bapi-Limit-*` (Bybit), WS: ≤300 connect attempts/5m/IP (Binance). Стратегия reconnect/backoff: 1s→2s→4s→8s→16s→30s (cap 30s) + jitter ±20%. При `429`: пауза по `Retry-After`/экспоненциальный backoff; при `ban/418`: охлаждение 5–15 мин + алерт в лог; при timeout/network: повтор с backoff, не более 10 подряд перед деградацией источника. |
 | DATA-03 | answered | Фолбэк-источник не требуется. |
 | DATA-04 | answered | Proxy/региональный routing не требуется. |
@@ -84,6 +84,13 @@
 | ACC-03 | answered | Финальный approver v1.1: владелец продукта/репозитория (requester) после успешного `make test` и проверки snapshot-артефактов. |
 
 ---
+
+## Официальные источники (проверено для Day-1)
+- Binance Spot API docs: https://developers.binance.com/docs/binance-spot-api-docs
+- Binance USDⓈ-M Futures docs: https://developers.binance.com/docs/derivatives/usds-margined-futures
+- Binance WS limits (300 connections attempts / 5 min / IP): https://developers.binance.com/docs/binance-spot-api-docs/web-socket-streams
+- Bybit v5 API docs: https://bybit-exchange.github.io/docs/v5/intro
+- Bybit rate limit rules: https://bybit-exchange.github.io/docs/v5/rate-limit
 
 ## Что осталось для полного закрытия
 1. ✅ Зафиксированы endpoints и лимиты API/WS (DATA-01, DATA-02).
