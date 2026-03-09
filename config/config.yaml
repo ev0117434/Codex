@@ -1,0 +1,9 @@
+app:
+  name: spread-monitor
+  environment: dev
+logging:
+  level: INFO
+health:
+  status: ok
+metrics:
+  enabled: true
